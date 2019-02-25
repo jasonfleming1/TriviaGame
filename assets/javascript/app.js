@@ -1,33 +1,26 @@
-//total trivia requirements
+//total trivia requirements======================================
 // 1. multiple choice or true/fals questions
 // 2. the quiz is timed
 // 3. user response may only be one answer
 // 4. at the end of the game show the number of correct responses
+// 5. link to your portfolio
 
-//app flow
-// 1. when the page loads the user sees the theme and a begin button
-// 2. clicking begin triggers several events
-        // hide start button
-        // first question is presented
-        // choices are presented
-        // a timer starts
-        // a submit button appears
-// 3. there are several options for ending
-    //an answer is submitted
-    //if true then provide a positive feedback and increment the score
-    //if false then provide negative feedback and do nothing to the socre
-    //if timeup then provide negative feedback and do nothign to the score
-// 4. when user has answered all questions trigger an alert with scores
+//app flow=======================================================
+//1. the user will see a begin button when the page loads
+//2. a question will be displayed with answers
+//3. a submit button will be availble to check the response against an answer
+//4. the system will present feedback on the answer's accuracy and will keep track of right and wrong replies
+//5. when all questions have been answered an alert will provdie the overall scored and the game may be replayed
 
-//  $('#myAlert').on('closed.bs.alert', function () {do something…})
-
-// Here are the global variables
+// ==========================================================================================
+// Setting variables -- content to be real later
 // ==========================================================================================
 
+//questions
 var questionArray = [ 
     {
-    question: "What is the best fruit?",
-    choices: ["Apples", "Pears", "Blueberries", "Watermelon"],
+    question: "Which fruit tastes like a blueberry?",
+    choices: ["Apples ", "Pears ", "Blueberries ", "Watermelon "],
     correct: 2,
 }, {
     question: "What is the highest number?",
@@ -35,23 +28,30 @@ var questionArray = [
     correct: 3,
 }];
 
-var currentQuestion; //the question to answer
-var totalQuestions = questionArray.length; //gets the array length
-var answeredCounter; //counts total number of questions answered
+//counts
+var currentQuestion; //tracks the index of questionArray so we can display the right question/answer
 var correctCounter; //counts number of correct guesses
 var wrongCounter; //counts number of wrong guesses
 var noneCounter; //counts number of time-out questions
+
+//response to guesses
 var feedback = {
     positive: "You are correct!",
     negative: "You are incorrect!",
     timeout: "You are out of time!",
 }
 
-console.log(totalQuestions)
+//timer values
+var timerRunning = false;
+var time = 15;
+
+// QA our vars
+console.log(questionArray.length)
 console.log(questionArray[0])
 console.log(questionArray[1])
+console.log(feedback)
 
-// Here we present a start button and the theme
+// Here we present the intro to the game
 // ==========================================================================================
 $(document).ready(function () {
 
@@ -59,40 +59,60 @@ $(document).ready(function () {
     $("#questions").hide();
     $("#answers").hide();
     $("#gameOver").hide();
-    
-    //display game space when users clicks begin
-    $("#startGame").click(function() {
-        restart();
+
+// Here we begin the game play when the user clicks the "begin" button
+// ==========================================================================================
+
+    $("#startGame").click(function() {  //onclick
+        $("#hideJumbotron").hide();     //hide the intro to the game and "start" button
+        $("#questions").show();         //show the question to the user
+        $("#question").html("stuff")    //QC line to be removed
+        currentQuestion = 0;            //set the current question to the first question
+        getQuestion();                 //call the game play function
     });
 
-
-// Here are some functions
+// Display Question
 // ==========================================================================================
-    
-    //function to restart the game
-    function restart() {
-        $("#questions").show();
-        $("#hideJumbotron").hide();
-        currentQuestion = 0; //reads the index
-        totalQuestions = 0;
-        answeredCounter = 0;
-        correctCounter = 0;
-        wrongCounter = 0;
-        noneCounter = 0;
-        getQuestions();
-    }
 
-    //function to play the game
-
-        function getQuestions () {
-        $("#question").html(questionArray[currentQuestion].question);
-        
-        for (var i = 0; i < 5; i++) {
-            $("#choices").text(questionArray[currentQuestion].choices);
+        function getQuestion () {                                      //retrieve a quesiton from the array of questions
+        $("#question").html(questionArray[currentQuestion].question);   //using the currentQuestion from "startGame" click
+        for (var i = 0; i < 5; i++) {                                   //iterate through object to get and display all choices
+            $("#choices").text(questionArray[currentQuestion].choices); //need to enable radio buttons or word clicks                                                              
+        }
+        startTimer();
+        if(time==0) {
+            
         }
     }
 
-// Here are some function calls
+// Display Results
+// ==========================================================================================
+
+
+
+// Timer Functions
+// ==========================================================================================
+   function startTimer () {
+       timerRunning = true;
+       time--;
+       $("#timer").text(time);
+   }
+
+   function stopTimer () {
+    timerRunning = false;
+}
+
+
+// Restart Function
+// ==========================================================================================
+    
+function restart() {
+    $("#questions").show();
+    $("#hideJumbotron").hide();
+    getQuestions();
+    }
+
+// Calling a function for test
 // ==========================================================================================
     
     //restarts the game
@@ -100,7 +120,7 @@ $(document).ready(function () {
         restart();
     });
 
-
+//  $('#myAlert').on('closed.bs.alert', function () {do something…})
 
 
 
