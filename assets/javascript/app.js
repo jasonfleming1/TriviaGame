@@ -18,6 +18,7 @@
 
 //questions
 var questionArray = [ 
+
     {
     question: "Which fruit tastes like a blueberry?",
     choices: ["Apples ", "Pears ", "Blueberries ", "Watermelon "],
