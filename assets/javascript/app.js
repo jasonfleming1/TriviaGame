@@ -70,7 +70,7 @@ $(document).ready(function () {
 
     //Here we retrieve a question from our questions object
     function getQuestion() {
-        alert("The current question id is " + currentQ + questionArray[currentQ].question)
+        alert("The current question id is from getQuestion function is " + currentQ + " "+ questionArray[currentQ].question)
         $("#timerBlock").show();
         $("#questionBlock").show();
         $("#choicesBlock").show();
@@ -79,26 +79,25 @@ $(document).ready(function () {
         $("#gameOver").hide();
         $("#question").html(questionArray[currentQ].question);
         questionTimer();
+   
+        //Here we retrieve the answers from our questions object
+        for (var i = 0; i < questionArray[currentQ].choices.length; i++) {
+            var theChoice = $("<button>");
+            theChoice.text(questionArray[currentQ].choices[i]);
+            theChoice.attr({ "data-index": i });
+            theChoice.addClass("isSelected");
+            $("#choices").append(theChoice);
+        }
+
+        //Here a user can make a selection
+        $(".isSelected").on("click", function () {
+            userChoice = $(this).data("index");
+            clearInterval(time);
+            alert("The user clicked index " + userChoice)
+            alert("The correct answer is " + questionArray[currentQ].correct)
+            theAnswer();
+        });
     }
-
-    //Here we retrieve the answers from our questions object
-    for (var i = 0; i < questionArray[currentQ].choices.length; i++) {
-        var theChoice = $("<button>");
-        theChoice.text(questionArray[currentQ].choices[i]);
-        theChoice.attr({ "data-index": i });
-        theChoice.addClass("isSelected");
-        $("#choices").append(theChoice);
-    }
-
-    //Here a user can make a selection
-    $(".isSelected").on("click", function () {
-        userChoice = $(this).data("index");
-        clearInterval(time);
-        alert("The user clicked index " + userChoice)
-        alert("The correct answer is " + questionArray[currentQ].correct)
-        theAnswer();
-    });
-
     //Here we are evaluating the choice
     function theAnswer() {
         $("#timerBlock").hide();
@@ -153,7 +152,7 @@ $(document).ready(function () {
         }
     }
 
-    //Here we will get the next question or show the results
+    //Here we will get the next question or show the results - i had a second timer but ran out of time
     function nextEvent() {
         alert("the current question before the evaluation event is " + currentQ)
         alert("The current quiz length is " + quizLength)
@@ -162,6 +161,8 @@ $(document).ready(function () {
 
         } else {
             currentQ++;
+            $(".isSelected").empty();
+            $("#choices").empty();
             alert("the current question after the else statement is " + currentQ)
             setTimeout(getQuestion, 1000);
         }
