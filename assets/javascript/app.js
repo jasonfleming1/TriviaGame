@@ -1,133 +1,192 @@
-//total trivia requirements======================================
-// 1. multiple choice or true/fals questions
-// 2. the quiz is timed
-// 3. user response may only be one answer
-// 4. at the end of the game show the number of correct responses
-// 5. link to your portfolio
+//global variab les
+//================================================================
 
-//app flow=======================================================
-//1. the user will see a begin button when the page loads
-//2. a question will be displayed with answers
-//3. a submit button will be availble to check the response against an answer
-//4. the system will present feedback on the answer's accuracy and will keep track of right and wrong replies
-//5. when all questions have been answered an alert will provdie the overall scored and the game may be replayed
-
-// ==========================================================================================
-// Setting variables -- content to be real later
-// ==========================================================================================
-
-//questions
-var questionArray = [ 
-
+var questionArray = [
     {
-    question: "Which fruit tastes like a blueberry?",
-    choices: ["Apples ", "Pears ", "Blueberries ", "Watermelon "],
-    correct: 2,
-}, {
-    question: "What is the highest number?",
-    choices: [300, 50, 451, 900],
-    correct: 3,
-}];
+        question: "Which fruit tastes like a blueberry?",
+        choices: ["Apples ", "Pears ", "Blueberries ", "Watermelon "],
+        correct: 2,
+        correctText: "The correct answer is blueberries!",
+        correctImage: "I didn't make it this far"
+    },
+    {
+        question: "What is the best?",
+        choices: ["Hot dogs ", "Pizza ", "Popcorn ", "My Answer"],
+        correct: 3,
+        correctText: "The correct answer is My Answer!",
+        correctImage: "I didn't make it this far"
+    },
+    {
+        question: "Why are you here",
+        choices: ["Lonely ", "Bored ", "Sad ", "Happy "],
+        correct: 2,
+        correctText: "The correct answer is Sad!",
+        correctImage: "I didn't make it this far"
+    }];
 
-//counts
-var currentQuestion; //tracks the index of questionArray so we can display the right question/answer
-var correctCounter; //counts number of correct guesses
-var wrongCounter; //counts number of wrong guesses
-var noneCounter; //counts number of time-out questions
+//canned responses
+var correct = "Great job ";
+var incorrect = "Too bad ";
+var timeIsUp = "Time has expired ";
 
-//response to guesses
-var feedback = {
-    positive: "You are correct!",
-    negative: "You are incorrect!",
-    timeout: "You are out of time!",
-}
+//quiz controls
+var quizLength = questionArray.length; //number quiz questions
+var currentQ = 0; //current question user is guessing
+var countCorrect = 0; //holds correct guesses
+var countWrong = 0; //holds wrong guesses
+var noResponse = 0; //holds no response counts
 
-//timer values
-var timerRunning = false;
-var time = 15;
+//timers
 
-// QA our vars
-console.log(questionArray.length)
-console.log(questionArray[0])
-console.log(questionArray[1])
-console.log(feedback)
+var time;
+var seconds;
 
-// Here we present the intro to the game
-// ==========================================================================================
+//var qc
+console.log("Quiz duration is " + quizLength + " questions")
+console.log(questionArray)
+
+//GAME PLAY
+//================================================================
+
 $(document).ready(function () {
 
-    // hide the game space before user begins game
-    $("#questions").hide();
-    $("#answers").hide();
+    //Showing the theme and intro page
+    $("#timerBlock").hide();
+    $("#questionBlock").hide();
+    $("#choicesBlock").hide();
+    $("#answerBlock").hide();
+    $("#timerBlock2").hide();
     $("#gameOver").hide();
 
-// Here we begin the game play when the user clicks the "begin" button
-// ==========================================================================================
-
-    $("#startGame").click(function() {  //onclick
-        $("#hideJumbotron").hide();     //hide the intro to the game and "start" button
-        $("#questions").show();         //show the question to the user
-        $("#question").html("stuff")    //QC line to be removed
-        currentQuestion = 0;            //set the current question to the first question
-        getQuestion();                 //call the game play function
+    //Clicking start retreives the first question and answer
+    $("#startGame").click(function () {
+        $("#hideJumbotron").hide();
+        currentQ = 0;
+        getQuestion();
     });
 
-// Display Question
-// ==========================================================================================
+    //Game play
+    //================================================================
 
-        function getQuestion () {                                      //retrieve a quesiton from the array of questions
-        $("#question").html(questionArray[currentQuestion].question);   //using the currentQuestion from "startGame" click
-        for (var i = 0; i < 5; i++) {                                   //iterate through object to get and display all choices
-            $("#choices").text(questionArray[currentQuestion].choices); //need to enable radio buttons or word clicks                                                              
+    //Here we retrieve a question from our questions object
+    function getQuestion() {
+        alert("The current question id is " + currentQ + questionArray[currentQ].question)
+        $("#timerBlock").show();
+        $("#questionBlock").show();
+        $("#choicesBlock").show();
+        $("#timerBlock2").hide();
+        $("#answerBlock").hide();
+        $("#gameOver").hide();
+        $("#question").html(questionArray[currentQ].question);
+        questionTimer();
+    }
+
+    //Here we retrieve the answers from our questions object
+    for (var i = 0; i < questionArray[currentQ].choices.length; i++) {
+        var theChoice = $("<button>");
+        theChoice.text(questionArray[currentQ].choices[i]);
+        theChoice.attr({ "data-index": i });
+        theChoice.addClass("isSelected");
+        $("#choices").append(theChoice);
+    }
+
+    //Here a user can make a selection
+    $(".isSelected").on("click", function () {
+        userChoice = $(this).data("index");
+        clearInterval(time);
+        alert("The user clicked index " + userChoice)
+        alert("The correct answer is " + questionArray[currentQ].correct)
+        theAnswer();
+    });
+
+    //Here we are evaluating the choice
+    function theAnswer() {
+        $("#timerBlock").hide();
+        $("#questionBlock").hide();
+        $("#choicesBlock").hide();
+        $("#timerBlock2").show();
+        $("#answerBlock").show();
+        $("#gameOver").hide();
+        $(".thisChoice").empty();
+
+        if (questionArray[currentQ].correct === userChoice) {
+            countCorrect++;
+            $("#answers").html(correct + questionArray[currentQ].correctText);
+            nextEvent();
+        } else if (questionArray[currentQ].correct !== userChoice) {
+            countWrong++;
+            $("#answers").html(incorrect + questionArray[currentQ].correctText);
+            nextEvent();
         }
-        startTimer();
-        if(time==0) {
-            
+        else {
+            noResponse++;
+            $("#answers").html(timeIsUp + questionArray[currentQ].correctText);
+            nextEvent();
+        }
+        console.log(" Correct " + countCorrect)
+        console.log(" Wrong " + countWrong)
+        console.log(" No answer " + noResponse)
+
+    }
+
+    //Question Timer
+    //================================================================
+    //Here we limiting the response time to 15
+    function questionTimer() {
+        seconds = 20;
+        $("#timer").html("00:" + seconds);
+        time = setInterval(questionCountdown, 1000);
+    }
+
+    //Here we are controlling the timer and time events
+    function questionCountdown() {
+        seconds--;
+        if (seconds < 10) {
+            $("#timer").html("00:0" + seconds);
+            $("#timer").css({ "color": "red" });
+        } else {
+            $("#timer").html("00:" + seconds);
+        }
+        if (seconds < 1) {
+            noResponse++;
+            theAnswer();
         }
     }
 
-// Display Results
-// ==========================================================================================
+    //Here we will get the next question or show the results
+    function nextEvent() {
+        alert("the current question before the evaluation event is " + currentQ)
+        alert("The current quiz length is " + quizLength)
+        if (currentQ === quizLength) {
+            setTimeout(theResults, 1000);
 
-
-
-// Timer Functions
-// ==========================================================================================
-   function startTimer () {
-       timerRunning = true;
-       time--;
-       $("#timer").text(time);
-   }
-
-   function stopTimer () {
-    timerRunning = false;
-}
-
-
-// Restart Function
-// ==========================================================================================
-    
-function restart() {
-    $("#questions").show();
-    $("#hideJumbotron").hide();
-    getQuestions();
+        } else {
+            currentQ++;
+            alert("the current question after the else statement is " + currentQ)
+            setTimeout(getQuestion, 1000);
+        }
     }
 
-// Calling a function for test
-// ==========================================================================================
-    
-    //restarts the game
-    $("#gameOver").click(function() {
-        restart();
-    });
+    function theResults() {
+        $("#timerBlock").hide();
+        $("#questionBlock").hide();
+        $("#choicesBlock").hide();
+        $("#timerBlock2").hide();
+        $("#answerBlock").hide();
+        $("#gameOver").show();
+        $("#totalQuestions").html(quizLength);
+        $("#countCorrect").html(countCorrect);
+        $("#countWrong").html(countWrong);
+        $("#noResponse").html(noResponse);
+        $("#restartBtn").click(restart());
+    }
 
-//  $('#myAlert').on('closed.bs.alert', function () {do something…})
+    function restart() {
+        currentQ = 0;
+        countCorrect = 0;
+        countWrong = 0;
+        noResponse = 0;
+        getQuestion();
+    }
 
-
-
-
-
-
-
-
-})
+});

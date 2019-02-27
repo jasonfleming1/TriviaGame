@@ -16,7 +16,7 @@
 
     <!-- Style References -->
     <link href="https://fonts.googleapis.com/css?family=Press+Start+2P|Raleway" rel="stylesheet">
-    <link rel="stylesheet" type="text/css" media="screen" href="assets/css/reset.css">
+    <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css">
     <link rel="stylesheet" type="text/css" media="screen" href="assets/css/style.css">
 </head>
 
@@ -45,31 +45,42 @@
         <!--==Start game space==-->
 
         <!--Question block-->
-        <div class="row" id="questions">
-            <span id="timer"></span>
-            <span id="question"></span>
-            <span id="choices"></span>
+        <div class="row" id="timerBlock">
+            <div class="col-md-12" id="timer"></div>
         </div>
+        <br>
+        <div class="row" id="questionBlock">
+            <div class="col-md-12" id="question"></div>
+        </div>
+        <br>
+        <div class="row" id="choicesBlock">
+            <div class="col-md-12" id="choices"></div>
+        </div>
+        <br>
 
         <!--Answer block-->
-        <div class="row" id="answers">
-            <span id="text"></span>
-            <span id="correctAnswer"></span>
+        <div class="row" id="timerBlock2">
+            <div class="col-md-12" id="timerNext"></div>
         </div>
+        <div class="row" id="answerBlock">
+            <div class="col-md-12" id="answers"></div>
+        </div>
+
 
         <!--End of Game Alert-->
         <div id="gameOver" class="alert alert-success" role="alert">
             <h4 class="alert-heading">Quiz Complete!</h4>
-            <p id="correctCounter"></p>
-            <p id="wrongCounter"></p>
-            <p id="unanswered"></p>
-            <button type="button" class="btn btn-secondary">Replay</button>
+            <p>You answered <span id=totalQuestions></span> questions</p>
+            <p>You correectly answered <span id=countCorrect></span> questions</p>
+            <p>You incorrectly answered <span id=countWrong></span> questions</p>
+            <p>You didn't answer <span id=noResponse></span> questions</p>
+            <button id="restartBtn" type="button" class="btn btn-secondary">Play Again!</button>
         </div>
         <br>
         <br>
     </div>
 
-    <!--==End game space==-->
+    <!--==End Game Space==-->
 
     <!--Start JS file reference-->
     <script src="assets/javascript/app.js"></script>

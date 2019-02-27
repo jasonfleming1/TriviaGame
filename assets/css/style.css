@@ -3,3 +3,11 @@
 body {
     text-align: center;
 }
+
+#question {
+    font-weight: bold;
+}
+
+#questionBlock {
+    text-align: left;
+}
