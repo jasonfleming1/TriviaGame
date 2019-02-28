@@ -4,30 +4,30 @@
 var questionArray = [
     {
         question: "Which fruit tastes like a blueberry?",
-        choices: ["Apples ", "Pears ", "Blueberries ", "Watermelon "],
+        choices: ["Apples ", "Pears ", "Blueberries ", "Watermelon ",],
         correct: 2,
         correctText: "The correct answer is blueberries!",
         correctImage: "I didn't make it this far"
     },
     {
-        question: "What is the best?",
-        choices: ["Hot dogs ", "Pizza ", "Popcorn ", "My Answer"],
+        question: "What is the world's most popular fruit??",
+        choices: ["Bananas ", "Watermelon ", "Apples ", "Tomatoes"],
         correct: 3,
-        correctText: "The correct answer is My Answer!",
+        correctText: "The correct answer is Tomatoes!",
         correctImage: "I didn't make it this far"
     },
     {
-        question: "Why are you here",
-        choices: ["Lonely ", "Bored ", "Sad ", "Happy "],
-        correct: 2,
-        correctText: "The correct answer is Sad!",
+        question: "What is the world's least popular fruit?",
+        choices: ["Cherry ", "Lime ", "Peach ", "Pomegranate "],
+        correct: 3,
+        correctText: "The correct answer is Pomegranate!",
         correctImage: "I didn't make it this far"
     }];
 
 //canned responses
-var correct = "Great job ";
-var incorrect = "Too bad ";
-var timeIsUp = "Time has expired ";
+var correct = "Great job! ";
+var incorrect = "Too bad! ";
+var timeIsUp = "Time has expired! ";
 
 //quiz controls
 var quizLength = questionArray.length; //number quiz questions
@@ -37,9 +37,11 @@ var countWrong = 0; //holds wrong guesses
 var noResponse = 0; //holds no response counts
 
 //timers
-
 var time;
 var seconds;
+
+//controls
+var isAnswered = 2;
 
 //var qc
 console.log("Quiz duration is " + quizLength + " questions")
@@ -91,6 +93,7 @@ $(document).ready(function () {
         //Here a user can make a selection
         $(".isSelected").on("click", function () {
             userChoice = $(this).data("index");
+            isAnswered = 1;
             clearInterval(time);
             theAnswer();
         });
@@ -105,26 +108,29 @@ $(document).ready(function () {
         $("#gameOver").hide();
         $(".thisChoice").empty();
 
-        if (questionArray[currentQ].correct === userChoice) {
-            countCorrect++;
+
+        if ((questionArray[currentQ].correct == userChoice) && (isAnswered == 1)) {
             $("#answers").html(correct + questionArray[currentQ].correctText);
+            countCorrect++;
             currentQ++;
+            isAnswered = 2;
             nextEvent();
-        } else if (questionArray[currentQ].correct !== userChoice) {
-            countWrong++;
+    } 
+
+        else if ((questionArray[currentQ].correct !== userChoice) && (isAnswered == 1)) {
             $("#answers").html(incorrect + questionArray[currentQ].correctText);
+            countWrong++;
             currentQ++;
             nextEvent();
         }
-        else {
-            noResponse++;
+
+        else  {
+            userChoice = 0;
             $("#answers").html(timeIsUp + questionArray[currentQ].correctText);
+            noResponse++;
             currentQ++;
             nextEvent();
         }
-        console.log(" Correct " + countCorrect)
-        console.log(" Wrong " + countWrong)
-        console.log(" No answer " + noResponse)
 
     }
 
@@ -132,7 +138,7 @@ $(document).ready(function () {
     //================================================================
     //Here we limiting the response time to 15
     function questionTimer() {
-        seconds = 20;
+        seconds = 10;
         $("#timer").html("00:" + seconds);
         time = setInterval(questionCountdown, 1000);
     }
@@ -140,26 +146,28 @@ $(document).ready(function () {
     //Here we are controlling the timer and time events
     function questionCountdown() {
         seconds--;
-        if (seconds < 10) {
+        if (seconds < 1) {
+            theAnswer();
+        }
+        else if (seconds < 10) {
             $("#timer").html("00:0" + seconds);
             $("#timer").css({ "color": "red" });
-        } else {
+        } 
+
+        else {
             $("#timer").html("00:" + seconds);
-        }
-        if (seconds < 1) {
-            noResponse++;
-            theAnswer();
         }
     }
 
     //Here we will get the next question or show the results - i had a second timer but ran out of time
     function nextEvent() {
-        if (currentQ===quizLength) {
-            setTimeout(theResults, 1000);
+        if (currentQ==quizLength) {
+            setTimeout(theResults, 3000);
         } else {
+            isAnswered = 2;
             $(".isSelected").empty();
             $("#choices").empty();
-            setTimeout(getQuestion, 1000);
+            setTimeout(getQuestion, 3000);
         }
     }
 
