@@ -70,7 +70,6 @@ $(document).ready(function () {
 
     //Here we retrieve a question from our questions object
     function getQuestion() {
-        alert("The current question id is from getQuestion function is " + currentQ + " "+ questionArray[currentQ].question)
         $("#timerBlock").show();
         $("#questionBlock").show();
         $("#choicesBlock").show();
@@ -93,8 +92,6 @@ $(document).ready(function () {
         $(".isSelected").on("click", function () {
             userChoice = $(this).data("index");
             clearInterval(time);
-            alert("The user clicked index " + userChoice)
-            alert("The correct answer is " + questionArray[currentQ].correct)
             theAnswer();
         });
     }
@@ -111,15 +108,18 @@ $(document).ready(function () {
         if (questionArray[currentQ].correct === userChoice) {
             countCorrect++;
             $("#answers").html(correct + questionArray[currentQ].correctText);
+            currentQ++;
             nextEvent();
         } else if (questionArray[currentQ].correct !== userChoice) {
             countWrong++;
             $("#answers").html(incorrect + questionArray[currentQ].correctText);
+            currentQ++;
             nextEvent();
         }
         else {
             noResponse++;
             $("#answers").html(timeIsUp + questionArray[currentQ].correctText);
+            currentQ++;
             nextEvent();
         }
         console.log(" Correct " + countCorrect)
@@ -154,16 +154,11 @@ $(document).ready(function () {
 
     //Here we will get the next question or show the results - i had a second timer but ran out of time
     function nextEvent() {
-        alert("the current question before the evaluation event is " + currentQ)
-        alert("The current quiz length is " + quizLength)
-        if (currentQ === quizLength) {
+        if (currentQ===quizLength) {
             setTimeout(theResults, 1000);
-
         } else {
-            currentQ++;
             $(".isSelected").empty();
             $("#choices").empty();
-            alert("the current question after the else statement is " + currentQ)
             setTimeout(getQuestion, 1000);
         }
     }
@@ -179,14 +174,18 @@ $(document).ready(function () {
         $("#countCorrect").html(countCorrect);
         $("#countWrong").html(countWrong);
         $("#noResponse").html(noResponse);
-        $("#restartBtn").click(restart());
-    }
+        $("#restartBtn").click(function() {
+           restart();
+        }
+        )};
 
     function restart() {
         currentQ = 0;
         countCorrect = 0;
         countWrong = 0;
         noResponse = 0;
+        $(".isSelected").empty();
+        $("#choices").empty();
         getQuestion();
     }
 
